@@ -1,0 +1,15 @@
+From the console (PuTTY window), edit the network properties of the Raspberry:
+
+	sudo nano /etc/network/interfaces 
+
+Now add these lines at the end of the file (or change existing lines to match these):
+
+	allow-hotplug wlan0 
+	iface wlan0 inet dhcp 
+	wpa-ssid "YOUR NETWORK SSID"
+	wpa-psk "WIFI PASSWORD"
+
+(Fill in the SSID and password for your WiFi network)
+Reboot the Raspberry with this command and see if it correctly connects to your WiFi network:
+
+	sudo reboot  

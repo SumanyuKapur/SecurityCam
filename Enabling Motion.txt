@@ -1,0 +1,68 @@
+We now need to install it using the command line (log in to your raspberry as user "pi"):
+	
+	sudo apt-get install motion 
+
+Some packages will be installed in the installation process; just type "y" to proceed with the installation.
+As the current version of motion does not (yet) support the Raspberry camera module, we need to download and install a special build with support for this camera module.
+	
+	cd /tmp 
+	sudo apt-get install -y libjpeg62 libjpeg62-dev libavformat53 libavformat-dev libavcodec53 libavcodec-dev libavutil51 libavutil-dev libc6-dev zlib1g-dev libmysqlclient18 libmysqlclient-dev libpq5 libpq-dev
+	wget https://www.dropbox.com/s/xdfcxm5hu71s97d/motion-mmal.tar.gz  
+
+And now you need to unpack the downloaded file to the /tmp directory:
+
+	tar zxvf motion-mmal.tar.gz  
+
+After this unzipping, you now need to update your installed motion with the downloaded build:
+
+	sudo mv motion /usr/bin/motion
+	sudo mv motion-mmalcam.conf /etc/motion.conf  
+
+You also need to enable the motion daemon so that motion will always run:
+
+	sudo nano /etc/default/motion			
+	start_motion_daemon=yes
+
+A very important command to edit the motion configuration file is
+
+	sudo nano /etc/motion.conf  
+
+Be sure to have the file permissions correct: when you install motion via ssh while being logged in as user "pi", you need to make sure to give the user "motion" the permissions to run motion as service after reboot:
+
+	sudo chmod 664 /etc/motion.conf
+	sudo chmod 755 /usr/bin/motion
+	sudo touch /tmp/motion.log
+	sudo chmod 775 /tmp/motion.log  
+
+
+We want to store the logfile in /tmp instead (otherwise autostart user won't be able to acces it in /home/pi/ folder):
+
+	logfile /tmp/motion.log
+
+As we want to use a high quality surveillance video, we've set the resolution to 1280x720:
+
+	width 1280
+	height 720 
+
+We don't need real-time video, 2 pictures per second are totally ok for our needs:
+framerate 2 
+
+We don't want endless movies. Instead, we want to have max. 10 minutes slices of the motion videos. This config option was renamed from max_movie_time to max_mpeg_time in motion. If you use the motion-mmal build, this one will work. If you get an error 'Unknown config option "max_mpeg_time"' either change this one to max_movie_time or make sure to really use the motion-mmal build as shown above.
+
+	max_mpeg_time 600 
+
+As some media players like VLC are unable to play the recorded movies, we've changed the codec to msmpeg4. Then, the movies play correctly in all players:
+
+	ffmpeg_video_codec msmpeg4  
+Enable access to the live stream from anywhere. Otherwise only localhost (= the Raspberry device) would be allowed to access the live stream:
+
+	stream_localhost off 
+
+If you want to protect the live stream with a username and password, you should enable this:
+
+	stream_auth_method 2  
+	stream_authentication SOMEUSERNAME:SOMEPASSWORD 
+
+After your changes to the motion.conf, reboot the Raspberry:
+
+	sudo reboot  

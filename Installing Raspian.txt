@@ -1,0 +1,9 @@
+To make sure RPI is Updated:- 
+
+	sudo apt-get install rpi-update
+	sudo rpi-update
+
+To update all packages:-
+
+	sudo apt-get update
+	sudo apt-get upgrade

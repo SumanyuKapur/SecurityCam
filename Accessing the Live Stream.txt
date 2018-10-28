@@ -1,0 +1,10 @@
+Now you can access the live stream from the camera from any browser via the url 
+
+	http://IPADDRESSOFRASPBERRY:8080
+
+Where 8080 is the port that we've configured for our stream in the motion.conf file. See your own configuration setting "stream_port" in motion.conf for the port.
+Google Chrome 30 (not even on iOS) wasn't able to play this stream directly due to a bug in the underlying Chromium project.
+A workaround for this is to create a simple html file that contains one large image with the stream-url of the camera. See the file cam.html from raspberry_surveillance_cam_scavix.zip. This way, Chrome can show the live stream as well. Let's hope that Chrome will fix this issue in their browser.
+But other browsers like FireFox, Safari and even VLC media player was able to show the live stream of the camera.
+Live stream doesn't work in Internet Explorer as it doesn't support Motion JPEG.
+And it also works on your Mobile Device
